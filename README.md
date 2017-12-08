@@ -44,15 +44,15 @@ $ sudo bash -c  "cat docker-compose.yml | docker run --rm -i micahhausler/contai
 + 轉譯後特別注意要加上AWSEBDockerrunVersion及 ECS Repository URI 
 ```json 
 {
-	"AWSEBDockerrunVersion": 2,
+    "AWSEBDockerrunVersion": 2,
     "containerDefinitions": [
-        {Dockerrun.aws.json
-			"name": "res"
+        {
+	    "name": "res"
             "essential": true,
-			"image": "<ECS Repository URI>:版本號",
-			...
+	    "image": "<ECS Repository URI>:版本號",
+	    ...
         },
-		...
+	...
     ],
 ...
 }
