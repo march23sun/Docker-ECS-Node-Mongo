@@ -1,0 +1,56 @@
+version: "2"
+services:
+  res:
+    build: ./node-mongo-codecommit-backup
+    volumes:
+      - "node_data:/node"
+      - "s3backup_data:/s3backup"
+    environment:
+      - S3_ACCESS_KEY_ID=<YOUR S3_ACCESS_KEY_ID>
+      - S3_SECRET_ACCESS_KEY=<YOUR S3_SECRET_ACCESS_KEY>
+      - S3_BUCKET=<YOUR S3 BUCKET Name>
+      - S3_REGION=<YOUR S3 REGION  ex.ap-northeast-1>
+      - CODECOMMIT_USER=<YOUR CODECOOMIT USER NAME>
+      - CODECOMMIT_PWD=<YOUR CODECOOMIT USER PASSWORD>
+      - CODECOMMIT_REGION=<YOUR CODECOMMIT REGION  ex.ap-northeast-1>
+      - CODECOMMIT_NAME=<YOUR CODECOMMIT REPO NAME>
+      - CRONTAB_SETTING=00 03 * * *  <CHANGE MONGODB BACKUP BACKUP CRON JOB schedule>
+      - MONGO_USER=<MONGO DB USERNAME>
+      - MONGO_PWD=<MONGO DB PASSWORD>
+    mem_limit: 134217728b
+    links:
+      - mongo-container
+  node_web_app:
+    image: node:8.9-alpine
+    volumes:
+      - "node_data:/app"
+    ports:
+      - "80:3000"
+    links:
+      - mongo-container
+      - res
+    working_dir: /app
+    environment:
+      - NODE_ENV=production
+      - MONGO_USER=<MONGO DB USERNAME>
+      - MONGO_PWD=<MONGO DB PASSWORD>
+    entrypoint: sh -c "sh /app/checkCodeCommit.sh"
+    depends_on:
+      - res
+      - mongo-container
+    mem_limit: 134217728b 
+  mongo-container:
+     image: mongo:3.4.10
+     environment:
+      - MONGO_INITDB_ROOT_USERNAME=<MONGO DB USERNAME>
+      - MONGO_INITDB_ROOT_PASSWORD=<MONGO DB PASSWORD>
+     ports:
+      - "23333:27017"
+     volumes:
+      - "mongodb_data:/data/db"
+     command: mongod
+     mem_limit: 134217728b 
+volumes:
+  node_data:
+  mongodb_data:
+  s3backup_data:
