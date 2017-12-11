@@ -59,6 +59,7 @@ $ sudo bash -c  "cat docker-compose.yml | docker run --rm -i micahhausler/contai
 }
 ```
 5.將Dockerrun.aws.json打包zip檔 Deploy到EB
+
 6.訪問 xxx.REGION.elasticbeanstalk.com 並使用Robo工具分別測試nodejs mongodb是否正常(須先將對應的EC2 inbound rules 新增mongodb port)
 #### Update & Deploy Node Js Source Flow
 1.commit & Push node.js source code to CodeCommit Repository 
